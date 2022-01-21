@@ -1,0 +1,19 @@
+version: '2'
+services:
+  triangle-backend:
+    container_name: triangle-backend
+    image: triangle-backend
+    ports:
+      - "8080:8080"
+    environment:
+      datasource.url: jdbc:mysql://triangle.ceku3opa8ckn.eu-west-1.rds.amazonaws.com:3306/triangle?createDatabaseIfNotExist=true
+      datasource.username: root
+      datasource.password: thepassword
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: eu-west-1
+        awslogs-group: triangle-logs
+        awslogs-stream: triangle-stream
+
+

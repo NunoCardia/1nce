@@ -1,0 +1,132 @@
+openapi: "3.0.0"
+
+info:
+  description: "Triangle Classification API"
+  version: "1.0.0"
+  title: "Triangle Classification"
+  contact:
+    email: "nunocardia21@gmail.com"
+    name: "Nuno Ferreira"
+  license:
+    name: Apache 2.0
+
+paths:
+  /triangles/verify:
+    post:
+      summary: "Triangle Category Classification"
+      operationId: "verifyTriangle"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TriangleRequest"
+      responses:
+        "200":
+          description: "Ok"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TriangleResponse"
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /triangles:
+    get:
+      summary: "Fetch Triangle Classification History"
+      operationId: "triangleHistory"
+      responses:
+        "200":
+          description: "Ok"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TriangleHistoryResponse'
+        "400":
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Error:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+        timestamp:
+          type: "string"
+          format: "date-time"
+    TriangleRequest:
+      type: "object"
+      properties:
+        firstSide:
+          type: "number"
+          format: "double"
+          minimum: 0
+          exclusiveMinimum: true
+        secondSide:
+          type: "number"
+          format: "double"
+          minimum: 0
+          exclusiveMinimum: true
+        thirdSide:
+          type: "number"
+          format: "double"
+          minimum: 0
+          exclusiveMinimum: true
+    TriangleResponse:
+      type: "object"
+      properties:
+        firstSide:
+          type: "number"
+          format: "double"
+        secondSide:
+          type: "number"
+          format: "double"
+        thirdSide:
+          type: "number"
+          format: "double"
+        category:
+          type: "string"
+          enum: ["equilateral", "isosceles", "scalene"]
+    TriangleHistoryResponse:
+      type: "object"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+          minimum: 1
+        firstSide:
+          type: "number"
+          format: "double"
+        secondSide:
+          type: "number"
+          format: "double"
+        thirdSide:
+          type: "number"
+          format: "double"
+        category:
+          type: "string"
+          enum: ["equilateral", "isosceles", "scalene"]
+        timestamp:
+          type: "string"
+          format: "date-time"
