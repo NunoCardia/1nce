@@ -9,8 +9,9 @@
         <relativePath/>
     </parent>
     <groupId>com.once</groupId>
-    <artifactId>demo-project</artifactId>
+    <artifactId>1nce-project</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>demo-project</name>
     <description>demo-project</description>
 
@@ -32,108 +33,40 @@
         <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
         <junit5.version>5.5.2</junit5.version>
         <mockito.version>3.3.3</mockito.version>
-        <jib.version>2.0.0</jib.version>
-        <jib.skip>false</jib.skip>
         <jacoco.version>0.8.6</jacoco.version>
-        <sonar.exclusions>
-            **/com/once/demoproject/config/*,
-            **/com/once/demoproject/dto/*,
-            **/com/once/demoproject/exception/*,
-            **/com/once/demoproject/model/*,
-            **/com/once/demoproject/repository/*,
-            **/com/once/demoproject/TriangleProjectApplication.java
-        </sonar.exclusions>
     </properties>
 
-    <dependencies>
-        <!-- Spring Boot dependencies -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+    <modules>
+        <module>triangle-adapter-inbound-rest</module>
+        <module>triangle-core</module>
+        <module>triangle-adapter-outbound-mysql</module>
+        <module>triangle-application</module>
+    </modules>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j2</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-        <!--Mysql connector dependency-->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-        <!--Lombok-->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
-        </dependency>
-        <!--Testing dependencies-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>${mockito.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!--Swagger dependencies-->
-        <dependency>
-            <groupId>org.openapitools</groupId>
-            <artifactId>openapi-generator</artifactId>
-            <version>${openapi-generator.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-simple</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!--Mapstruct dependencies-->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>${org.mapstruct.version}</version>
-        </dependency>
-    </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.once</groupId>
+                <artifactId>triangle-adapter-inbound-rest</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.once</groupId>
+                <artifactId>triangle-adapter-outbound-mysql</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.once</groupId>
+                <artifactId>triangle-core</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.once</groupId>
+                <artifactId>triangle-application</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
+            </dependencies>
+        </dependencyManagement>
 
     <build>
         <plugins>
@@ -156,35 +89,6 @@
                             <version>${org.mapstruct.version}</version>
                         </path>
                     </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-            <!-- jib plugin -->
-            <plugin>
-                <groupId>com.google.cloud.tools</groupId>
-                <artifactId>jib-maven-plugin</artifactId>
-                <version>${jib.version}</version>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>dockerBuild</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <skip>true</skip>
-                    <from>
-                        <image>openjdk:11.0.4-jre-slim</image>
-                    </from>
-                    <to>
-                        <image>triangle-backend</image>
-                    </to>
-                    <container>
-                        <ports>
-                            <port>8080</port>
-                        </ports>
-                    </container>
-                    <skip>${jib.skip}</skip>
                 </configuration>
             </plugin>
             <plugin>
