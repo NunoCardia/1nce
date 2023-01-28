@@ -10,6 +10,11 @@ A REST API was created with the two requested endpoints:
 
 The endpoint description can be consulted in the [Swagger](src/main/resources/swagger.yml). Both endpoints use JSON as requested.
 
+This project was implemented using the Hexagonal Architecture. The hexagonal architecture, also known as the ports and adapters pattern, is a software design pattern that separates the internal logic of a system from its external interfaces, allowing for easy testing and maintenance by using 'ports' for external interactions and 'adapters' to connect to specific implementations.
+<p align="center">
+  <img style="text-align:center" src="documentation/architecture/hexagonal.png"  alt="architecture"/>
+</p>
+
 ## Table of contents
 
 - [Code Structure](documentation/code-structure/README.md)
