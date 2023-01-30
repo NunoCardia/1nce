@@ -1,0 +1,38 @@
+
+
+triangle_app:
+  probes:
+    liveness: /actuator/health/liveness
+    readiness: /actuator/health/readiness
+  datasource:
+    host: triangle-app
+    jdbc: jdbc:mysql
+    port: 3306
+    database: triangle
+    params: createDatabaseIfNotExist=true
+  docker:
+    repository: triangle-app
+    tag: 0.1.0
+    pullPolicy: IfNotPresent
+
+kubernetes:
+  namespace: dev
+  service:
+    type: LoadBalancer
+    port: 8080
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1500Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+# Sub-chart dependencies override
+mysql:
+  namespaceOverride: dev
+  fullnameOverride: triangle-mysql
+  auth:
+    database: triangle
+    username: once
+    password: testpassword

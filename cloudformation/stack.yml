@@ -1,0 +1,107 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  # Create an ECR repository to store Docker images
+  ECRRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: my-ecr-repo
+
+  # Create an ECS Task Definition for the Fargate application
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: my-task-definition
+      ContainerDefinitions:
+        - Name: my-container
+          Image: !Join [ ":", [ !Ref "ECRRepository", "latest" ] ]
+          PortMappings:
+            - ContainerPort: 80
+
+  # Create an ECS Cluster
+  Cluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: my-ecs-cluster
+
+  # Create a security group for the ECS service
+  ECSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow inbound HTTP traffic from API Gateway to ECS
+
+  # Create an ECS Service for the Fargate application
+  Service:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref Cluster
+      DesiredCount: 1
+      LaunchType: "FARGATE"
+      TaskDefinition: !Ref TaskDefinition
+      LoadBalancers:
+        - ContainerName: my-container
+          ContainerPort: 80
+          SecurityGroups:
+            - !Ref ECSSecurityGroup
+
+  # Create an API Gateway
+  API:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: my-api
+
+  # Create a deployment for the API Gateway
+  Deployment:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId: !Ref API
+      StageName: prod
+
+  # Create a security group for the API Gateway
+  APISecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow outbound HTTP traffic from API Gateway to ECS
+
+  # Create an API Gateway integration for the ECS service
+  Integration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref API
+      IntegrationMethod: GET
+      IntegrationType: HTTP_PROXY
+      IntegrationUri: !Join ["", ["http://", !GetAtt Service.LoadBalancerDNSName]]
+
+  # Create an API Gateway method for the API Gateway integration
+  Method:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      ResourceId: !GetAtt API.RootResourceId
+      HttpMethod: GET
+      RestApiId: !Ref API
+      AuthorizationType: NONE
+      Integration: !Ref Integration
+
+  # Allow incoming traffic to ECS service from API Gateway
+  ECSToAPIRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref ECSSecurityGroup
+      IpProtocol: tcp
+      FromPort: 80
+      ToPort: 80
+      SourceSecurityGroupId: !Ref APISecurityGroup
+
+  APIToECSRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref APISecurityGroup
+      IpProtocol: tcp
+      FromPort: 80
+      ToPort: 80
+      SourceSecurityGroupId: !Ref ECSSecurityGroup
+
+Outputs:
+  ApiURL:
+    Description: The URL of the API Gateway
+    Value: !Join [ "", [ "https://", !Ref API, ".execute-api.", !Ref "AWS::Region", ".amazonaws.com/prod" ] ]

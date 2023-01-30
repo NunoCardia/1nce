@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.once</groupId>
     <artifactId>1nce-project</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>pom</packaging>
     <name>demo-project</name>
     <description>demo-project</description>
@@ -48,22 +48,22 @@
             <dependency>
                 <groupId>com.once</groupId>
                 <artifactId>triangle-adapter-inbound-rest</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.once</groupId>
                 <artifactId>triangle-adapter-outbound-mysql</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.once</groupId>
                 <artifactId>triangle-core</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.once</groupId>
                 <artifactId>triangle-application</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             </dependencies>
         </dependencyManagement>
