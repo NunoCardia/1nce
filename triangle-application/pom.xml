@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.once</groupId>
         <artifactId>1nce-project</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.1.0</version>
     </parent>
 
     <artifactId>triangle-application</artifactId>
@@ -34,6 +34,16 @@
             <groupId>com.once</groupId>
             <artifactId>triangle-adapter-inbound-rest</artifactId>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -67,7 +77,11 @@
                         <image>openjdk:11.0.4-jre-slim</image>
                     </from>
                     <to>
-                        <image>triangle-backend</image>
+                        <image>triangle-app</image>
+                        <tags>
+                            <tag>${project.version}</tag>
+                            <tag>latest</tag>
+                        </tags>
                     </to>
                     <container>
                         <ports>

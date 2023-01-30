@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.once</groupId>
         <artifactId>1nce-project</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.1.0</version>
     </parent>
 
     <artifactId>triangle-adapter-inbound-rest</artifactId>
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>com.once</groupId>
             <artifactId>triangle-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

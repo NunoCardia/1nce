@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{.Values.kubernetes.namespace}}
+  labels:
+    {{- include "triangle-app.labels" . | nindent 4 }}
+
+spec:
+  selector:
+    matchLabels:
+      name: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        name: {{ .Chart.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- with .Values.triangle_app.docker}}
+          image: "{{ .repository }}:{{ .tag }}"
+          imagePullPolicy: {{ .pullPolicy }}
+          {{- end}}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          {{- with .Values.triangle_app.probes}}
+          livenessProbe:
+            httpGet:
+              path: {{ .liveness }}
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 4
+            successThreshold: 1
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: {{ .readiness }}
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 4
+            successThreshold: 3
+            failureThreshold: 5
+          {{- end}}
+          resources:
+            {{- toYaml .Values.kubernetes.resources | nindent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Chart.Name }}-configmap
+            - secretRef:
+                name: {{ .Chart.Name }}-secret
+
+
