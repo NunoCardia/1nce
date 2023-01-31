@@ -32,7 +32,7 @@ sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-c
 # Set up environment variables
 export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
 export M2_HOME=/opt/apache-maven-3.6.3
-export PATH=${M2_HOME}/bin:${PATH}
+export cp /opt/apache-maven-3.6.3/bin/mvn /usr/bin
 source ~/.bashrc
 
 sudo mkdir -p /home/ec2-user/apps/triangle-app
