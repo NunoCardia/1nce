@@ -38,11 +38,11 @@ source ~/.bashrc
 sudo mkdir -p /home/ec2-user/apps/triangle-app
 sudo git clone https://github.com/NunoCardia/1nce.git /home/ec2-user/apps/triangle-app
 cd /home/ec2-user/apps/triangle-app
-sudo sed -i -r "s/localhost/${rds_instance_endpoint}/g" triangle-application/src/main/resources/application.properties
+sudo sed -i -r "s/localhost:3306/${rds_instance_endpoint}/g" triangle-application/src/main/resources/application.properties
 sudo mvn clean install -DskipTests -Djib.skip
 ### Fixing file permissions ###
-sudo chmod 777 triangle-application/target/*.jar
+sudo chmod 777 triangle-application/target/triangle-application-0.1.0.jar
 
 ### Running the application ### 
-java -jar triangle-application/target/triangle-application-0.1.0.jar
+sudo java -jar triangle-application/target/triangle-application-0.1.0.jar
 

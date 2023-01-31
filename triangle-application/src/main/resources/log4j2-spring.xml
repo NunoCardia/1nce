@@ -33,10 +33,10 @@
         <!-- LOG everything at INFO level -->
         <Root level="INFO">
             <AppenderRef ref="CONSOLE" />
-            <!--      <AppenderRef ref="RollingFile" />-->
+            <AppenderRef ref="RollingFile" />
         </Root>
 
-        <Logger name="com.celfocus" level="TRACE"/>
+        <Logger name="com.once" level="TRACE"/>
         <Logger name="org.springframework.web" level="DEBUG"/>
         <Logger name="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" level="ERROR"/>
 

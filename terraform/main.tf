@@ -3,15 +3,15 @@ provider "aws" {
     region = "eu-west-3"
 }
 
-resource "aws_security_group" "triangle_access" {
-  name = "triangle_access"
+resource "aws_security_group" "triangle_rds_access" {
+  name = "triangle_rds_access"
   description = "Allow access to the triangle RDS instance"
 
   ingress {
   from_port = 3306
   to_port = 3306
   protocol = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
+  security_groups = [ aws_security_group.triangle-app-sg.id]
   }
 }
 
@@ -22,11 +22,11 @@ resource "aws_db_instance" "triangle" {
   engine                 = "mysql"
   engine_version         = "5.7"
   username               = "root"
-  password               = "thepassword"
+  password               = "password"
   parameter_group_name = "default.mysql5.7"
   publicly_accessible    = false
   skip_final_snapshot    = true
-  vpc_security_group_ids = [aws_security_group.triangle_access.id]
+  vpc_security_group_ids = [aws_security_group.triangle_rds_access.id]
 }
 
 resource "aws_iam_role" "triangle-app-rds-access" {
@@ -89,20 +89,6 @@ resource "aws_security_group" "triangle-app-sg" {
     from_port = 22
     to_port   = 22
     protocol  = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 3306
-    to_port     = 3306
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
