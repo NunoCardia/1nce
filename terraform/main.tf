@@ -12,9 +12,95 @@ resource "aws_db_instance" "triangle" {
   username               = "root"
   password               = "thepassword"
   parameter_group_name = "default.mysql5.7"
-  publicly_accessible    = true
+  publicly_accessible    = false
   skip_final_snapshot    = true
-  vpc_security_group_ids = []
+  vpc_security_group_ids = [aws_security_group.triangle-app-sg.id]
+}
+
+resource "aws_iam_role" "triangle-app-rds-access" {
+  name = "triangle-app-rds-access"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "triangle-app-rds-access" {
+  name = "triangle-app-rds-access"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = [
+          "rds:*"
+        ],
+        Effect = "Allow",
+        Resource = "arn:aws:rds:*:*:db:triangle"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy_attachment" "triangle-app-policy-role" {
+  name = "triangle-app-attachment"
+  roles = [aws_iam_role.triangle-app-rds-access.name]
+  policy_arn = aws_iam_policy.triangle-app-rds-access.arn
+}
+
+resource "aws_iam_instance_profile" "triangle-app-rds-access" {
+  name  = "triangle-app-profile"
+  role = aws_iam_role.triangle-app-rds-access.name
+}
+
+resource "aws_security_group" "triangle-app-sg" {
+  name        = "triangle-app-sg"
+  description = "Allow incoming traffic on port 8080"
+
+  ingress {
+    from_port = 8080
+    to_port   = 8080
+    protocol  = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    security_groups = [aws_security_group.triangle-app-sg.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+locals {
+  rds_instance_endpoint = aws_db_instance.triangle.endpoint
+}
+
+resource "aws_instance" "triangle-app" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "t2.micro"
+  security_groups = [aws_security_group.triangle-app-sg.name]
+  iam_instance_profile = aws_iam_instance_profile.triangle-app-rds-access.name
+  user_data = file("./scripts/backend.sh")
+  vars = {
+    rds_instance_endpoint = local.rds_instance_endpoint
+  }
 }
 
 
