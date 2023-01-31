@@ -7,8 +7,9 @@ sudo yum install git -y
 # Java
 sudo amazon-linux-extras install java-openjdk11 -y
 # Maven
-sudo wget http://mirrors.estointernet.in/apache/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
-sudo tar xzvf apache-maven-3.6.3-bin.tar.gz -C /opt/
+sudo wget https://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
+sudo yum install -y apache-maven
 # CW agent configuration
 sudo bash -c 'cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json << EOL
 {
@@ -17,7 +18,7 @@ sudo bash -c 'cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent
             "files": {
                 "collect_list": [
                     {
-                        "file_path": "/home/ec2-user/apps/triangle-app/logs/spring-boot-logger-log4j2.log",
+                        "file_path": "/home/ec2-user/apps/triangle-app/logs/triangle-app.log",
                         "log_group_name": "triangle-logs",
                         "log_stream_name": "triangle-stream"
                     }
@@ -31,13 +32,10 @@ sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-c
 
 # Set up environment variables
 export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
-export M2_HOME=/opt/apache-maven-3.6.3
-export cp /opt/apache-maven-3.6.3/bin/mvn /usr/bin
 source ~/.bashrc
 
-sudo mkdir -p /home/ec2-user/apps/triangle-app
-
 ### BackEnd Deployment ###
+sudo mkdir -p /home/ec2-user/apps/triangle-app
 sudo git clone https://github.com/NunoCardia/1nce.git /home/ec2-user/apps/triangle-app
 cd /home/ec2-user/apps/triangle-app
 sudo sed -i -r "s/localhost/${rds_instance_endpoint}/g" triangle-application/src/main/resources/application.properties

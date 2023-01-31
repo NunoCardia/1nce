@@ -1,6 +1,18 @@
 provider "aws" {
-    profile = "default"
-    region = "eu-west-1"
+    profile = "nuno"
+    region = "eu-west-3"
+}
+
+resource "aws_security_group" "triangle_access" {
+  name = "triangle_access"
+  description = "Allow access to the triangle RDS instance"
+
+  ingress {
+  from_port = 3306
+  to_port = 3306
+  protocol = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_db_instance" "triangle" {
@@ -14,7 +26,7 @@ resource "aws_db_instance" "triangle" {
   parameter_group_name = "default.mysql5.7"
   publicly_accessible    = false
   skip_final_snapshot    = true
-  vpc_security_group_ids = [aws_security_group.triangle-app-sg.id]
+  vpc_security_group_ids = [aws_security_group.triangle_access.id]
 }
 
 resource "aws_iam_role" "triangle-app-rds-access" {
@@ -74,10 +86,17 @@ resource "aws_security_group" "triangle-app-sg" {
   }
 
   ingress {
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     from_port   = 3306
     to_port     = 3306
     protocol    = "tcp"
-    security_groups = [aws_security_group.triangle-app-sg.id]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -93,14 +112,11 @@ locals {
 }
 
 resource "aws_instance" "triangle-app" {
-  ami           = "ami-0c55b159cbfafe1f0"
+  ami           = "ami-0ca5ef73451e16dc1"
   instance_type = "t2.micro"
   security_groups = [aws_security_group.triangle-app-sg.name]
   iam_instance_profile = aws_iam_instance_profile.triangle-app-rds-access.name
-  user_data = file("./scripts/backend.sh")
-  vars = {
-    rds_instance_endpoint = local.rds_instance_endpoint
-  }
+  user_data = templatefile("./scripts/backend.sh", {rds_instance_endpoint = local.rds_instance_endpoint})
 }
 
 
