@@ -58,7 +58,14 @@ resource "aws_iam_policy" "triangle-app-rds-access" {
         ],
         Effect = "Allow",
         Resource = "arn:aws:rds:*:*:db:triangle"
-      }
+      },
+      {
+            "Action": [
+                "logs:*"
+            ],
+            "Effect": "Allow",
+            "Resource": "*"
+        }
     ]
   })
 }
@@ -89,6 +96,13 @@ resource "aws_security_group" "triangle-app-sg" {
     from_port = 22
     to_port   = 22
     protocol  = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
@@ -124,17 +138,19 @@ resource "aws_cloudwatch_log_metric_filter" "error-metric-filter" {
     name      = "ErrorLogMetric"
     namespace = "TriangleMetrics"
     value     = "1"
+    default_value = "0"
   }
 }
 
 resource "aws_cloudwatch_metric_alarm" "error-alarm" {
-  alarm_name = "error-log-alarm"
-  metric_name         = aws_cloudwatch_log_metric_filter.error-metric-filter.name
+  alarm_name          = "error-log-alarm"
+  metric_name         = "ErrorLogMetric"
   threshold           = "0"
   statistic           = "Sum"
   comparison_operator = "GreaterThanThreshold"
   datapoints_to_alarm = "1"
   evaluation_periods  = "1"
-  period              = "30"
+  period              = "10"
   namespace           = "TriangleMetrics"
+
 }
