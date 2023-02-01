@@ -26,30 +26,9 @@ documentation](https://hub.docker.com/_/mysql) on how to start a MySQL instance.
 
 #### Local setup
 To run a local instance version of this project execute the command:
->docker compose -f docker-compose-local.yml up -d
-
-The file includes a mysql service based on the official MySQL image.
-
-#### Distributed setup
-
-The [docker compose](../../docker-compose.yml) file is prepared to send the logs to CloudWatch. If you choose
-this option please make sure that the resources declared in the _terraform_ folder are created before executing
-the application by going to the _terraform_ folder and execute:
-> terraform init
-> 
-> terraform plan
-> 
-> terraform apply
-
-If you choose to use your own CloudWatch resources please change the logging option values before executing the application
-in the [docker compose](../../docker-compose.yml).
-
-
-If you already have a MySQL instance created in Docker or RDS change the environment variable values in 
-the [docker compose](../../docker-compose.yml) file and execute the following command:
-
 >docker compose -f docker-compose.yml up -d
 
+The file includes a mysql service based on the official MySQL image.
 
 ## Running the tests
 
