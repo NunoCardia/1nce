@@ -45,59 +45,7 @@ logs are being sent to a file that is also read by the agent that in turn sends 
 details on how the agent was installed and configured
 
 ![img.png](../deployment/images/cloudwatch.png)
-## Containerized deployment with ECS
-As an alternative and for training purposes CloudFormation was used to create all the necessary resources.
-### Jib
-* The traditional way of using the `docker build` command was not considered here.
-Instead, a Google plugin named [Jib](https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin) was used.
-As stated before it is a plugin created by Google that creates docker images following
-the most recent standards for docker image creation. <p>&nbsp; 
-* Jib creates a layered docker image separating the application into multiple layers, splitting dependencies from classes.
-That way we don’t have to wait for Docker to rebuild the entire image - just build the layers that were changed.
-Another main advantage is that we don't actually need Docker installed in our 
-system, and we don't need the classic Dockerfile file in the project.
 
-#### Configuration
-
-```xml
-<!-- jib plugin -->
-            <plugin>
-                <groupId>com.google.cloud.tools</groupId>
-                <artifactId>jib-maven-plugin</artifactId>
-                <version>${jib.version}</version>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>dockerBuild</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <skip>true</skip>
-                    <from>
-                        <image>openjdk:11.0.4-jre-slim</image>
-                    </from>
-                    <to>
-                        <image>triangle-backend</image>
-                    </to>
-                    <container>
-                        <ports>
-                            <port>8080</port>
-                        </ports>
-                    </container>
-                    <skip>${jib.skip}</skip>
-                </configuration>
-            </plugin>
-```
-
-The main configuration here is done in the `<configuration>` tag where we can see that the syntax is similar to the syntax
-that is normally provided in a Dockerfile. Optionally we could push the image to a cloud repository like ECR but that was
-not necessary. Instead, the image was pushed to the docker daemon to be run locally. The Jib plugin is executed during the
-`compile` maven lifecycle and can be skipped by setting the `<jib.skip>` to false or adding the `-Djib.skip` flag in all maven commands.
-
-### Cloudformation
-TODO
 
 ## Containerized deployment with Kubernetes
 Also for consolidation of knowledge a Helm chart was created and if necessary can be deployed in a kubernetes cluster. As a database
