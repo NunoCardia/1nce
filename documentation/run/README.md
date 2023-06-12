@@ -1,4 +1,4 @@
-# Running instructions
+# Running the application with Docker
 
 ## Creating the docker image
 To create the docker image just run:
@@ -10,46 +10,9 @@ create the docker image**. To skip the docker image creation just add the follow
 
 ## Running the application
 
-The application can be run in multiple ways:
-
-### Local run
-Import the project to Intellij, right-click the main class and press run option.
-
-![img.png](images/local_run.png)
-
-Note: by default the application expects a MySQL database running in your computer. If you have a different database
-change the property values in the [application.properties](../../src/main/resources/application.properties) file.
-If you want to use a local instance of a MySQL database using docker please refer to the official [Dockerhub
-documentation](https://hub.docker.com/_/mysql) on how to start a MySQL instance.
-
 ### Docker compose
 
-#### Local setup
 To run a local instance version of this project execute the command:
 >docker compose -f docker-compose.yml up -d
 
 The file includes a mysql service based on the official MySQL image.
-
-## Running the tests
-
-### Unit tests
-To run the unit tests go to the project root and execute:
-> mvn clean test
-
-This will also create the project docker image. Please refer to the [docker image section](README.md#creating-the-docker-image) to change this.
-
-### Functional tests
-**Important:** Both the backend service and the database must be running before the test execution. Please refer to the
-[running instructions' section](README.md#running-the-application) for more information on how to run the services.
-
-In _functional-test_ folder run:
-
-* output on command line
-> newman run 1nce.postman_environment.json -e triangle-functional-test.postman_collection.json
-
-![img.png](images/report.png)
-* output in a report
-> newman run 1nce.postman_environment.json -e triangle-functional-test.postman_collection.json -r htmlextra
-
-![img_1.png](images/html.png)
-The HTML report is also included in the _functional-tests/newman_ folder.

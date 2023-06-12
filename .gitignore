@@ -34,3 +34,5 @@ build/
 terraform/.terraform.lock.hcl
 terraform/.terraform
 logs/triangle-app.log
+*.gz
+terraform/terraform.tfstate.backup

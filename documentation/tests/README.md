@@ -8,6 +8,28 @@ excluded classes. Sonar outputted:
 
 ![img.png](images/sonar.png)
 
+To run the unit tests go to the project root and execute:
+> mvn test
+
+## Integration Testing
+To test the entire application without mocking or complicated environment configurations integration tests were created.
+The tool that was used is [TestContainers](https://testcontainers.com/).
+
+Testcontainers is an open source framework for providing throwaway, lightweight instances of databases, message brokers, web browsers, or just about anything that can run in a Docker container.
+In the context of this project it was used to create a generic MySQL container with some sample data already placed in at initialization time.
+
+The tests are available in the _triangle-application_ module.
+
+### Running the tests
+
+To run the unit tests go to the project root and execute:
+> mvn verify -Pit -Djib.skip
+
+As integration tests are often ran in a separate stage of the pipeline a maven profile was created so that they can be specifically
+called for in a pipeline context. Without the profile id the integration tests are not executed. 
+
+As TestContainers is a container based product Docker is required so that Testcontainers can work.
+
 ## Functional Testing with Postman & Newman
 
 
@@ -138,7 +160,7 @@ and that file will be needed to run tests using Newman.
 The test collection and environment variables files are located in the _functional-tests_ folder. To import them
 into postman just press Ctrl/Cmd+O or using the Import button in the top left corner.
 
-## Using newman
+### Using newman
 
 Newman is a command line Collection Runner for Postman. It allows you to run and test a Postman Collection directly from the command line. It is built with extensibility in mind so that you can easily integrate it with your continuous integration servers and build systems.
 
@@ -151,4 +173,17 @@ Newman maintains feature parity with Postman and allows you to run collections t
 > npm install -g newman-reporter-htmlextra
 
 ### Running the tests
-Please refer to the [Running the tests](../run/README.md#running-the-tests) section.
+**Important:** Both the backend service and the database must be running before the test execution. Please refer to the
+[running instructions' section](README.md#running-the-application) for more information on how to run the services.
+
+In _functional-test_ folder run:
+
+* output on command line
+> newman run 1nce.postman_environment.json -e triangle-functional-test.postman_collection.json
+
+![img.png](images/report.png)
+* output in a report
+> newman run 1nce.postman_environment.json -e triangle-functional-test.postman_collection.json -r htmlextra
+
+![img_1.png](images/html.png)
+The HTML report is also included in the _functional-tests/newman_ folder.
