@@ -39,5 +39,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: restore/xdd4
+          base: master
           title: "Restore to Previous Version"
           body: "This pull request restores the repository to a previous version."
