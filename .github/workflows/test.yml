@@ -20,7 +20,7 @@ jobs:
         # Some script to get test results and store them in a variable
         test_results="4 failures"
 
-        - name: Request Review
+    - name: Request Review
       if: steps.test_results.outputs.test_results != '0 failures'
       uses: actions/github-script@v7
       with:
