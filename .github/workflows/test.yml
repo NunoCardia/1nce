@@ -36,4 +36,4 @@ jobs:
 
     - name: Output failure reasons
       if: steps.test_results.outputs.test_results != '0 failures'
-      run: echo "Failure reasons: ${{ env.FAILURE_REASONS }}"
+      run: echo "Failure reasons"
