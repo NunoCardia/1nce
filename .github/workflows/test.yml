@@ -24,11 +24,12 @@ jobs:
       if: steps.test_results.outputs.test_results != '0 failures'
       run: |
         REASONS=()
-        for ((i=1; i<=$TEST_RESULTS; i++)); do
-          read -p "Reason for failure $i: " reason
-          REASONS+=("$reason")
+        for i in $(seq 1 $TEST_RESULTS); do
+          echo "Reason for failure $i: "
+          read REASON
+          REASONS+=("$REASON")
         done
-        echo "name=FAILURE_REASONS" >> "$REASONS"
+        echo "FAILURE_REASONS=${REASONS[*]}" >> $GITHUB_ENV
 
     - name: Mark workflow as successful
       if: steps.test_results.outputs.test_results == '0 failures'
@@ -36,4 +37,4 @@ jobs:
 
     - name: Output failure reasons
       if: steps.test_results.outputs.test_results != '0 failures'
-      run: echo "Failure reasons = $name"
+      run: echo "Failure reasons"
