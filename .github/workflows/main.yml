@@ -31,13 +31,14 @@ jobs:
         run: |
           git config --local user.name github-actions
           git config --local user.email github-actions@github.com
-          git checkout -b restore/xdd1
+          git checkout -b restore/xdd2
           git add changelog.md
           git commit -m "🖉 Update changelog with ${GITHUB_REF#refs/*/}"
       - name: Open pull request
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: restore/xdd1
+          branch: restore/xdd2
+          base: master
           title: "Restore to Previous Version"
           body: "This pull request restores the repository to a previous version."
