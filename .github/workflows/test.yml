@@ -1,0 +1,39 @@
+name: Test Workflow
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Run tests
+      run: |
+        # Your test commands here
+
+    - name: Get test results
+      id: test_results
+      run: |
+        # Some script to get test results and store them in a variable
+        test_results="4 failures"
+
+    - name: Ask for reasons on failure
+      if: steps.test_results.outputs.test_results != '0 failures'
+      run: |
+        REASONS=()
+        for ((i=1; i<=$TEST_RESULTS; i++)); do
+          read -p "Reason for failure $i: " reason
+          REASONS+=("$reason")
+        done
+        echo "::set-env name=FAILURE_REASONS::${REASONS[*]}"
+
+    - name: Mark workflow as successful
+      if: steps.test_results.outputs.test_results == '0 failures'
+      run: echo "All tests passed!"
+
+    - name: Output failure reasons
+      if: steps.test_results.outputs.test_results != '0 failures'
+      run: echo "Failure reasons: ${{ env.FAILURE_REASONS }}"
