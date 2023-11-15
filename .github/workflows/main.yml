@@ -36,7 +36,7 @@ jobs:
           git commit -m "🖉 Update changelog with ${GITHUB_REF#refs/*/}"
           git push --set-upstream origin restore/xdd1
       - name: Open pull request
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: restore/xdd1
