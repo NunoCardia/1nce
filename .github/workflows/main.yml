@@ -31,6 +31,7 @@ jobs:
         run: |
           git config --local user.name github-actions
           git config --local user.email github-actions@github.com
+          git checkout -b restore/xdd
           git add changelog.md
           git commit -m "🖉 Update changelog with ${GITHUB_REF#refs/*/}"
-          git push
+          git push --set-upstream origin restore/xdd
