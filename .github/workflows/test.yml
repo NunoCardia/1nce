@@ -31,6 +31,22 @@ jobs:
         done
         echo "FAILURE_REASONS=${REASONS[*]}" >> $GITHUB_ENV
 
+    - name: Request Approval
+      if: steps.test_results.outputs.test_results != '0 failures'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { data } = await github.pulls.createReview({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number,
+            event: 'REQUEST_CHANGES',
+            body: 'Please provide reasons for the failing tests.'
+          });
+
+          // Wait for approval or rejection
+          await new Promise(resolve => setTimeout(resolve, 60000)); // Wait for 1 minute
+
     - name: Mark workflow as successful
       if: steps.test_results.outputs.test_results == '0 failures'
       run: echo "All tests passed!"
