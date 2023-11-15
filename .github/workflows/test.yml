@@ -28,7 +28,7 @@ jobs:
           read -p "Reason for failure $i: " reason
           REASONS+=("$reason")
         done
-        echo "::set-env name=FAILURE_REASONS::${REASONS[*]}"
+        echo "name=FAILURE_REASONS" >> "$REASONS"
 
     - name: Mark workflow as successful
       if: steps.test_results.outputs.test_results == '0 failures'
@@ -36,4 +36,4 @@ jobs:
 
     - name: Output failure reasons
       if: steps.test_results.outputs.test_results != '0 failures'
-      run: echo "Failure reasons"
+      run: echo "Failure reasons = $name"
