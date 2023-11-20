@@ -12,11 +12,11 @@ jobs:
           fetch-depth: 0
       - name: Cleanup
         run: |
-          rm mvnw.cmd
+          date +%F > xdd.txt
       - name: Commits changes
         uses: planetscale/ghcommit-action@v0.1.19
         with:
-          commit_message: 'Removes mvnw'
+          commit_message: 'Adds file'
           repo: ${{ github.repository }}
           branch: master
         env:
