@@ -11,12 +11,12 @@ jobs:
         with:
           fetch-depth: 0
           ref: master
-          token: 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
+          token: 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
 
       - name: ⚙ changelog
         uses: faberNovel/github-changelog-generator-action@master
         with:
-          options: --token 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 --o changelog.md
+          options: --token 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 --o changelog.md
 
       - name: 🚀 changelog
         run: |
