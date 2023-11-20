@@ -12,7 +12,7 @@ jobs:
           fetch-depth: 0
       - name: Cleanup
         run: |
-          date +%F > xdd.txt
+          rm xdd.txt
       - name: Commits changes
         uses: planetscale/ghcommit-action@v0.1.19
         with:
