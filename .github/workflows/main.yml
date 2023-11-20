@@ -2,30 +2,21 @@ name: changelog
 on:
   workflow_dispatch:
 
-env:
-  GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
 jobs:
   changelog:
     runs-on: ubuntu-latest
     steps:
-      - name: 🔍 GH_TOKEN
-        if: env.GH_TOKEN == ''
-        env: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: echo "GH_TOKEN=${GITHUB_TOKEN}" >> $GITHUB_ENV
-
       - name: 🤘 checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
           ref: master
-          token: ${{ env.GH_TOKEN }}
+          token: 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
 
       - name: ⚙ changelog
         uses: faberNovel/github-changelog-generator-action@master
         with:
-          options: --token ${{ secrets.GITHUB_TOKEN }} --o changelog.md
+          options: --token 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 --o changelog.md
 
       - name: 🚀 changelog
         run: |
