@@ -9,17 +9,19 @@ jobs:
       - name: Repository checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
-      - name: Cleanup
+          token: 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
+      - name: Make change to workflow file
         run: |
-          rm xdd.txt
-      - name: Commits changes
-        uses: planetscale/ghcommit-action@v0.1.19
-        with:
-          commit_message: 'Adds file'
-          repo: ${{ github.repository }}
-          branch: master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Pushes Changes
-        run: git push origin master
+          # Create new branch
+          git switch -c "feature"
+
+          # Edit workflow file
+          echo "# I am a change!" >> .github/workflows/workflow.yml
+
+          git config --global user.name "github-actions"
+          git config --global user.email \
+              "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add .github/workflows/workflow.yml
+          git commit --message "Update workflow"
+          git push
