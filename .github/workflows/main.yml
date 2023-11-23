@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Repository checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.1.1
         with:
           token: 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
       - name: Make change to workflow file
